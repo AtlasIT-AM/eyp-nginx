@@ -1,5 +1,5 @@
 define nginx::stubstatus (
-                          $stubstatus_url='/server-status',
+                          $stubstatus_url='/nginx_status',
                           $servername=$name,
                         ) {
 
