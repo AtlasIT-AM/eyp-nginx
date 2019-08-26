@@ -28,9 +28,9 @@ class nginx (
               $client_max_body_size       = undef,
             ) inherits nginx::params{
 
-  validate_absolute_path($defaultdocroot)
-
-  validate_array($serverstatus_allowedips)
+  # validate_absolute_path($defaultdocroot)
+  #
+  # validate_array($serverstatus_allowedips)
 
   Exec {
     path => '/usr/sbin:/usr/bin:/sbin:/bin'
@@ -138,6 +138,20 @@ class nginx (
     recurse => true,
     purge   => true,
     require => Exec["mkdir_p_${nginx::params::conf_d_dir}"],
+  }
+
+  concat { "${nginx::params::conf_d_dir}/proxycachepaths.conf":
+    ensure  => 'present',
+    owner   => 'root',
+    group   => $nginx::params::username,
+    mode    => '0644',
+    require => File[$nginx::params::conf_d_dir],
+  }
+
+  concat::fragment{ 'proxycache path header':
+    target  => "${nginx::params::conf_d_dir}/proxycachepaths.conf",
+    order   => '00',
+    content => "# puppet managed file\n",
   }
 
   file { "${nginx::params::baseconf}/mime.types":

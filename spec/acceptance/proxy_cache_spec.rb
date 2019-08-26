@@ -3,7 +3,7 @@ require_relative './version.rb'
 
 describe 'nginx class' do
 
-  context 'auth setup' do
+  context 'proxycache setup' do
     # Using puppet_apply as a helper
     it 'should work with no errors' do
       pp = <<-EOF
@@ -12,13 +12,11 @@ describe 'nginx class' do
         add_default_vhost => false,
       }
 
-      nginx::vhost { 'example.com':
+      nginx::vhost { 'systemadmin.es':
         port => 81,
       }
 
-      ->
-
-      file { '/var/www/example.com/demo':
+      file { '/var/www/systemadmin.es/demo':
         ensure  => 'present',
         owner   => 'root',
         group   => 'root',
@@ -26,14 +24,20 @@ describe 'nginx class' do
         content => 'demo\n',
       }
 
-      nginx::location { 'example.com':
-        auth_basic => true,
-        port       => 81,
+      nginx::proxycachepath { 'systemadmin_es':
+        path => '/var/www/cache/systemadmin_es',
       }
 
-      nginx::htuser { 'example.com':
-        user       => 'jordi',
-        crypt      => '$apr1$EBTJmPS3$xnh2s07TXkilXpQJKPYE7.'
+      nginx::proxypass { 'systemadmin.es':
+        port          => '81',
+        proxypass_url => 'http://1.1.1.1:8080',
+        location   => '/proxy',
+      }
+
+      nginx::proxycache { 'systemadmin_es':
+        port       => '81',
+        location   => '/proxy',
+        servername => 'systemadmin.es',
       }
 
       EOF
@@ -70,15 +74,15 @@ describe 'nginx class' do
       its(:content) { should match '# puppet managed file' }
     end
 
-
-    describe file("/etc/nginx/sites-enabled/81_example.com") do
+    describe file("/etc/nginx/conf.d/proxycachepaths.conf") do
       it { should be_file }
-      its(:content) { should match 'auth_basic_user_file' }
+      its(:content) { should match '# puppet managed file' }
     end
 
-    describe file("/etc/nginx/example.com.htpasswd") do
+    # /etc/nginx/sites-available
+    describe file("/etc/nginx/sites-available/81_systemadmin.es") do
       it { should be_file }
-      its(:content) { should match 'jordi' }
+      its(:content) { should match '# puppet managed file' }
     end
 
   end

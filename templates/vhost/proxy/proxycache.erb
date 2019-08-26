@@ -1,0 +1,11 @@
+    proxy_cache 	<%= @proxycache_name %>;
+    proxy_cache_key 	<%= @key %>;
+    <%- @valid.each do |key, val| -%>
+    proxy_cache_valid 	<%= key %> <%= val %>;
+    <%- end -%>
+    <%- if @bypass.any? -%>
+    <%- @bypass.each do |val| -%>
+    proxy_cache_bypass 	<%= val %>;
+    <%- end -%>
+    <%- end -%>
+    proxy_cache_use_stale <%= @use_stale %>;
