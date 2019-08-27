@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.23
+
+* allow vhost's servername to be an array
+* renamed options for **nginx::proxycachepath**
+
 ## 0.2.22
 
 * added **nginx::proxycachebypass** and **nginx::proxycachepath**
