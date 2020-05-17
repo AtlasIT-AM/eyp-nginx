@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.2.27
+
+* added support for **proxy_ignore_headers** using **nginx::proxyignoreheader**
+* added preliminary support for **nginx plus**
+* added health_check option to proxypass - ONLY for commercial subscription
+
 ## 0.2.26
 
 * added cleanup cron for proxy_cache
